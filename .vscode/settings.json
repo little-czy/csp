@@ -18,6 +18,8 @@
         "initializer_list": "cpp",
         "xiosbase": "cpp",
         "xutility": "cpp",
-        "xlocale": "cpp"
+        "xlocale": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp"
     }
 }
