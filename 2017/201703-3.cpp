@@ -8,6 +8,7 @@ vector<string> v;
 
 int main()
 {
+    freopen("in", "r", stdin);
     string line;
     bool p = 0;
     while (getline(cin, line))
