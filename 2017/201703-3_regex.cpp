@@ -30,8 +30,8 @@ int main()
     regex r_l("\\*\\s*(.*)");
     s = regex_replace(s, r_l, "<ul>\n<li>$1</li>\n</ul>");
     s = regex_replace(s, regex("</ul>\\n<ul>\\n"), "");
-    s = regex_replace(s, regex("</ul>\\n(?!<ul>)"), "</ul>\n\n");
-    regex r_link("\\[(.*)\\]\\((.*)\\)");
+    // s = regex_replace(s, regex("</ul>\\n(?!<ul>)"), "</ul>\n\n");
+    regex r_link("\\[(.*?)\\]\\((.*?)\\)");
     s = regex_replace(s, r_link, "<a href=\"$2\">$1</a>");
     regex r_em("_(.*?)_");
     s = regex_replace(s, r_em, "<em>$1</em>");
