@@ -1,21 +1,26 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <algorithm>
+#include <bits/stdc++.h>
 
 using namespace std;
 const int inf = 0x3f3f3f3f;
 const int maxn = 1e4 + 5;
+const int maxm = 1e4 + 5;
 
 struct node
 {
-    int v, w;
-    node(int _v, int _w) : v(_v), w(_w) {}
-};
+    int v, w, nxt;
+} edge[maxm << 1];
 
-int n, m, k, d[maxn], td[maxn], tdnum;
-bool type[maxn], vis[maxn];
-vector<node> adj[maxn];
+int n, m, k, head[maxn], total, d[maxn];
+bool isroot[maxn], vis[maxn];
+priority_queue<int, vector<int>, less<int>> s[maxn];
+
+inline void add_edge(int u, int v, int w)
+{
+    edge[++total].v = v;
+    edge[total].w = w;
+    edge[total].nxt = head[u];
+    head[u] = total;
+}
 
 void spfa(int s)
 {
@@ -30,10 +35,10 @@ void spfa(int s)
         int now = q.front();
         q.pop();
         vis[now] = false;
-        for (int i = 0; i < adj[now].size(); i++)
+        for (int i = head[now]; i; i = edge[i].nxt)
         {
-            int v = adj[now][i].v;
-            int w = adj[now][i].w;
+            int v = edge[i].v;
+            int w = edge[i].w;
             if (d[v] > d[now] + w)
             {
                 d[v] = d[now] + w;
@@ -45,12 +50,6 @@ void spfa(int s)
             }
         }
     }
-    tdnum = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        if (type[i] && d[i] != inf)
-            td[tdnum++] = d[i];
-    }
 }
 
 int main()
@@ -58,25 +57,41 @@ int main()
     int u, v, w;
     freopen("in", "r", stdin);
     ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    cin.tie(nullptr), cout.tie(nullptr);
     cin >> n >> m >> k;
     for (int i = 1; i <= n; i++)
-        cin >> type[i];
+        cin >> isroot[i];
     for (int i = 0; i < m; i++)
     {
         cin >> u >> v >> w;
-        adj[u].push_back(node(v, w));
-        adj[v].push_back(node(u, w));
+        if (u != v)
+            add_edge(u, v, w), add_edge(v, u, w);
+    }
+
+    for (int i = 1; i <= n; i++)
+    {
+        if (isroot[i])
+        {
+            spfa(i);
+            for (int j = 1; j <= n; j++)
+            {
+                if (d[j] != inf)
+                {
+                    if (s[j].size() < k)
+                        s[j].push(d[j]);
+                    else if (s[j].top() > d[j])
+                        s[j].pop(), s[j].push(d[j]);
+                }
+            }
+        }
     }
     for (int i = 1; i <= n; i++)
     {
         int ans = 0;
-        spfa(i);
-        sort(td, td + tdnum);
-        for (int j = 0; j < k && j < tdnum; j++)
-        {
-            ans += td[j];
-        }
+        while (!s[i].empty() && s[i].top() == inf)
+            s[i].pop();
+        while (!s[i].empty())
+            ans += s[i].top(), s[i].pop();
         cout << ans << endl;
     }
 
